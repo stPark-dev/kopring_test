@@ -1,5 +1,4 @@
-package com.example.demo.config
-
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -7,24 +6,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
 
+    private val logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/login", "/resources/**", "/error", "/users/hello").permitAll() // 로그인 페이지와 정적 리소스, 오류 페이지는 모두 접근 가능
-                    .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
+                    .requestMatchers("/login", "/resources/**", "/error", "/users/hello").permitAll()
+                    .anyRequest().authenticated()
             }
             .formLogin { login ->
                 login
-                    .loginPage("/login") // 커스텀 로그인 페이지 경로
-                    .defaultSuccessUrl("/users/view", true) // 로그인 성공 시 이동할 경로
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/users/view", true)
                     .permitAll()
             }
             .logout { logout ->
@@ -34,19 +37,27 @@ class SecurityConfig {
     }
 
     @Bean
-    fun userDetailsService(): UserDetailsService {
-        val user = User.withDefaultPasswordEncoder()
-            .username("user")
-            .password("password")
-            .roles("USER")
-            .build()
+    fun userDetailsService(passwordEncoder: PasswordEncoder): UserDetailsService {
+        val encodedPassword = passwordEncoder.encode("admin")
+        logger.debug("Encoded password for 'admin': $encodedPassword")  // 인코딩된 비밀번호 로그 출력
 
-        val admin = User.withDefaultPasswordEncoder()
+        val admin = User.builder()
             .username("admin")
-            .password("admin")
+            .password(encodedPassword)
             .roles("ADMIN")
             .build()
 
-        return InMemoryUserDetailsManager(user, admin)
+        val user = User.builder()
+            .username("user")
+            .password(passwordEncoder.encode("password"))
+            .roles("USER")
+            .build()
+
+        return InMemoryUserDetailsManager(admin, user)
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 }

@@ -14,7 +14,7 @@ class RegistrationController(private val memberRepository: MemberRepository, pri
 
     @GetMapping("/register")
     fun showRegistrationForm(model: Model): String {
-        model.addAttribute("member", Member(username = "", password = ""))
+        model.addAttribute("member", Member(username = "", password = "", email = ""))
         return "register"
     }
 

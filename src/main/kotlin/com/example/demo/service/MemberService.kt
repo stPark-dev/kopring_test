@@ -28,4 +28,9 @@ class MemberService(private val memberRepository: MemberRepository) : UserDetail
     fun findById(id: Long): Member? {
         return memberRepository.findById(id).orElse(null)
     }
+
+    // 추가된 save 메서드
+    fun save(member: Member): Member {
+        return memberRepository.save(member)
+    }
 }

@@ -30,13 +30,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll("-Xjsr305=strict")
-	}
+	testImplementation("io.mockk:mockk:1.13.7")
+	// testRuntimeOnly("org.junit.platform:junit-platform-launcher") // 이 의존성은 필요하지 않을 수 있습니다.
 }
 
 tasks.withType<Test> {

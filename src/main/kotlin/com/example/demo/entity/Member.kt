@@ -15,6 +15,9 @@ data class Member(
     @Column(nullable = false)
     val password: String,
 
+    @Column(nullable = true)
+    val email: String,
+
     @Column(nullable = false)
     val role: String = "ROLE_USER",
 

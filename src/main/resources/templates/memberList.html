@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member List</title>
+</head>
+<body>
+<h1>Member List</h1>
+<ul>
+    <li th:each="member : ${members}">
+        <span th:text="${member.username}"></span>
+    </li>
+</ul>
+</body>
+</html>

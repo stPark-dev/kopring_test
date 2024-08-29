@@ -18,12 +18,12 @@ class SecurityConfig(private val memberService: MemberService) {
         http
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/login", "/resources/**", "/error").permitAll()
+                    .requestMatchers("/login", "/register", "/resources/**", "/error").permitAll()
                     .anyRequest().authenticated()
             }
             .formLogin { login ->
                 login
-                    .loginPage("/login")
+                    .loginPage("/login") // 커스텀 로그인 페이지 설정
                     .defaultSuccessUrl("/members/view", true)
                     .permitAll()
             }
